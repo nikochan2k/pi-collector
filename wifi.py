@@ -37,7 +37,7 @@ def get_vendor(address):
     return vendor
 
 
-def create_packet_callback(sta, queue):
+def create_packet_callback(channel, sta, queue):
 
     def packet_callback(packet):
         if not packet.haslayer(Dot11):
@@ -117,7 +117,7 @@ def create_packet_callback(sta, queue):
         last_address = address
         last_ap_address = ap_address
 
-        content = {'uptime': uptime, 'date': now.strftime("%Y/%m/%d %H:%M:%S.%f"), 'sender': sender}
+        content = {'uptime': uptime, 'date': now.strftime("%Y/%m/%d %H:%M:%S.%f"), 'sender': sender, 'channel': channel}
         if address:
             content['address'] = address.upper()
             content['vendor'] = get_vendor(address)
@@ -141,8 +141,8 @@ def create_packet_callback(sta, queue):
     return packet_callback
 
 
-def _sniff(interface, queue, sta):
-    sniff(iface=interface, prn=create_packet_callback(queue, sta), timeout=10,
+def _sniff(interface, channel, queue, sta):
+    sniff(iface=interface, prn=create_packet_callback(channel, queue, sta), timeout=10,
             store=0, filter='link[26] = 0x40')
 
 
@@ -154,7 +154,7 @@ def scan(interface, sta, channels, queue = None):
                 os.system('ifconfig wlan0 down')
                 os.system('nexutil -k' + str(channel))
                 os.system('ifconfig mon0 up')
-                t = threading.Thread(target=_sniff, args=(interface, sta, queue,))
+                t = threading.Thread(target=_sniff, args=(interface, channel, sta, queue,))
                 t.daemon = True
                 t.start()
                 t.join()
@@ -172,10 +172,9 @@ if __name__ == '__main__':
     if 3 <= len(args):
         sta = int(args[2])
 
-    channels = (1,7,11)
+    channels = (1,6,11,2,7,12,3,8,13,4,9,14,5,10)
     if 4 <= len(args):
         channels = args[3].split(',')
-
 
     scan(args[1], sta, channels, None)
 

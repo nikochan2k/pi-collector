@@ -49,22 +49,24 @@ def write(out, content):
         f.write(str(content['gps']))
         f.write(',')
         f.write(content['address'])
-        f.write(',')
+        f.write(',"')
         f.write(content.get('vendor') or '')
-        f.write(',')
+        f.write('","')
         f.write(content.get('name') or '')
-        f.write(',')
+        f.write('",')
         f.write(str(content.get('rssi') or ''))
         f.write(',')
         f.write(content.get('ap_address') or '')
-        f.write(',')
+        f.write(',"')
         f.write(content.get('ap_vendor') or '')
-        f.write(',')
+        f.write('","')
         f.write(content.get('ap_name') or '')
-        f.write(',')
+        f.write('",')
         f.write(str(content.get('ap_rssi') or ''))
         f.write(',')
         f.write(content['sender'])
+        f.write(',')
+        f.write(content.get('channel') or '')
         f.write(',')
         f.write(str(content.get('txpower') or ''))
         f.write('\r\n')
@@ -74,7 +76,7 @@ def main(args):
     if args.out and not os.path.exists(args.out):
         with open(args.out, 'w') as f:
             f.write(codecs.BOM_UTF8)
-            f.write('uptime,timestamp,latitude,longitude,altitude,speed,course,hdop,vdop,gps,address,vendor,name,rssi,ap_address,ap_vendor,ap_name,ap_rssi,sender,txpower\r\n')
+            f.write('uptime,timestamp,latitude,longitude,altitude,speed,course,hdop,vdop,gps,address,vendor,name,rssi,ap_address,ap_vendor,ap_name,ap_rssi,sender,channel,txpower\r\n')
 
     if os.path.exists(args.gps):
         fields = Array('d', range(8))
@@ -129,7 +131,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=DESCRIPTION)
-    parser.add_argument('-c', '--channels', default='1,6,11', help="the channels to listen on")
+    parser.add_argument('-c', '--channels', default='1,6,11,2,7,12,3,8,13,4,9,14,5,10', help="the channels to listen on")
     parser.add_argument('-o', '--out', help="output csv file name, output console if nothing")
     parser.add_argument('-w', '--wifi', required=True,
                         help="the capture wifi interface to use")
