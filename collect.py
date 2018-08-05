@@ -78,7 +78,7 @@ def main(args):
             f.write(codecs.BOM_UTF8)
             f.write('uptime,timestamp,latitude,longitude,altitude,speed,course,hdop,vdop,gps,address,vendor,name,rssi,ap_address,ap_vendor,ap_name,ap_rssi,sender,channel,txpower\r\n')
 
-    if os.path.exists(args.gps):
+    if args.gps.startswith('/dev/'):
         fields = Array('d', range(8))
         fields[LATITUDE] = 0
         fields[LONGITUDE] = 0

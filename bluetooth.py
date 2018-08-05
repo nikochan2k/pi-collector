@@ -41,7 +41,7 @@ def parse(line):
             vendor = get_vendor(address)
             with open('/proc/uptime', 'r') as f:
                 uptime = f.readline().split()[0]
-            content = {'uptime': uptime, 'date': now.strftime("%Y/%m/%d %H:%M:%S.%f"),
+            content = {'uptime': uptime, 'date': now.strftime("%Y/%m/%d %H:%M:%S"),
                     'sender': 'BT_Advertising', 'address': address, 'vendor': vendor}
             devices[address] = content
 

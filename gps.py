@@ -46,11 +46,18 @@ def set_clock(gps, set_clock_minutes):
         now_str = now.strftime('%Y-%m-%d %H:%M:%S.%f')
         date_command = "date --set='%s' --utc" % now_str
         os.system(date_command)
+        os.system('hwclock -w')
         print('set system clock to %s UTC' % now_str)
 
 
-def receive(gpsdev, fields = None, set_clock_minutes = 60):
+def receive(devices, fields = None, set_clock_minutes = 60):
     gps = micropyGPS.MicropyGPS(0, 'dd')
+    
+    for device in devices.split(','):
+        if os.path.exists(device):
+           gpsdev = device
+           break
+        print('No gps device: %s' % device)
 
     with open(gpsdev, 'r') as f:
         while True:
@@ -88,7 +95,7 @@ def receive(gpsdev, fields = None, set_clock_minutes = 60):
 
 if __name__ == '__main__':
     args = sys.argv
-    if len(args) < 2 or not os.path.exists(args[1]):
+    if len(args) < 2:
         print('gps.py [gps_device]')
         sys.exit(1)
     receive(args[1])

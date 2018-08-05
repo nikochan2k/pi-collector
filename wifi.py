@@ -117,7 +117,7 @@ def create_packet_callback(channel, sta, queue):
         last_address = address
         last_ap_address = ap_address
 
-        content = {'uptime': uptime, 'date': now.strftime("%Y/%m/%d %H:%M:%S.%f"), 'sender': sender, 'channel': channel}
+        content = {'uptime': uptime, 'date': now.strftime("%Y/%m/%d %H:%M:%S"), 'sender': sender, 'channel': channel}
         if address:
             content['address'] = address.upper()
             content['vendor'] = get_vendor(address)
@@ -127,6 +127,8 @@ def create_packet_callback(channel, sta, queue):
             content['ap_vendor'] = get_vendor(ap_address)
             try:
                 content['ap_name'] = packet.info.decode('utf-8', errors='replace')
+            except UnicodeEncodeError:
+                content['ap_name'] = packet.info
             except AttributeError:
                 pass
 
