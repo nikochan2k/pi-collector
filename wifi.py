@@ -9,6 +9,10 @@ from scapy.all import *
 from radiotap import radiotap_parse
 import oui
 
+if sys.version[0] == '2':
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
 last_address = None
 last_ap_address = None
 
@@ -127,7 +131,7 @@ def create_packet_callback(channel, sta, queue):
             content['ap_vendor'] = get_vendor(ap_address)
             try:
                 content['ap_name'] = packet.info.decode('utf-8', errors='replace')
-            except UnicodeEncodeError:
+            except UnicodeDecodeError:
                 content['ap_name'] = packet.info
             except AttributeError:
                 pass
